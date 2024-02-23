@@ -2,23 +2,19 @@ import style from './SearchBar.module.css';
 
 import { getImages } from 'helpers/api';
 
-export const SearchBar = ({ page, onSubmit }) => {
+export const SearchBar = ({ page, onSubmit, setIsLoading }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const { data: { hits } } = await getImages(event.target.elements[1].value, page);
+        setIsLoading();
+
+        const { data: { hits, totalHits } } = await getImages(event.target.elements[1].value, page);
 
         const newImages = hits.map(({id, webformatURL, largeImageURL}) => {
             return {id, webformatURL, largeImageURL}
         });
 
-        
-
-        onSubmit(newImages);
-
-        console.log(hits);
-
-        //onSubmit(event.target.value);
+        onSubmit(event.target.elements[1].value, newImages, totalHits);
     }
 
     return (
