@@ -12,42 +12,56 @@ export class App extends Component {
   state = {
     images: [],
     page: 1,
+    isLoading: false,
     searchIsDone: false,
     searchQuery: '',
     totalImages: 0,
-    isLoading: false,
   };
 
   hendleSearch = async query => {
     this.setState({ isLoading: true });
 
-    const {
-      data: { hits, totalHits },
-    } = await getImages(query, 1);
+    try {
+      const {
+        data: { hits, totalHits },
+      } = await getImages(query, 1);
 
-    const newImages = hits.map(({ id, webformatURL, largeImageURL }) => {
-      return { id, webformatURL, largeImageURL };
-    });
+      const newImages = hits.map(({ id, webformatURL, largeImageURL }) => {
+        return { id, webformatURL, largeImageURL };
+      });
 
-    this.setState({
-      images: newImages,
-      page: 1,
-      searchIsDone: true,
-      searchQuery: query,
-      totalImages: totalHits,
-      isLoading: false,
-    });
+      this.setState({
+        images: newImages,
+        page: 1,
+        isLoading: false,
+        searchIsDone: true,
+        searchQuery: query,
+        totalImages: totalHits,
+      });
+    } catch (error) {
+      alert(error.response?.data || 'Something went wrong!');
+    } finally {
+      this.setState({ isLoading: false });
+    }
   };
 
   handleLoadMore = async () => {
-    const {
-      data: { hits },
-    } = await getImages(this.state.searchQuery, this.state.page + 1);
+    this.setState({ isLoading: true });
 
-    this.setState(state => ({
-      images: [...state.images, ...hits],
-      page: state.page + 1,
-    }));
+    try {
+      const {
+        data: { hits },
+      } = await getImages(this.state.searchQuery, this.state.page + 1);
+
+      this.setState(state => ({
+        images: [...state.images, ...hits],
+        page: state.page + 1,
+      }));
+    } catch (error) {
+      alert(error.response?.data || 'Something went wrong!');
+    } finally {
+      this.setState({ isLoading: false });
+    }
   };
 
   render() {
@@ -58,11 +72,8 @@ export class App extends Component {
 
     return (
       <div className={style.App}>
-        <SearchBar
-          onSubmit={this.hendleSearch}
-          setIsLoading={this.setIsLoading}
-        />
-        <ImageGallery images={images} isLoading={isLoading} />
+        <SearchBar onSubmit={this.hendleSearch} />
+        <ImageGallery images={images} />
         {isLoading && (
           <Audio
             height="80"
