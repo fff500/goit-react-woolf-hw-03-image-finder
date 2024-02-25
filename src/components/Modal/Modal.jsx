@@ -21,7 +21,7 @@ export class Modal extends Component {
     return (
       <div className={style.Overlay} onClick={this.props.toggleModal}>
         <div className={style.Modal}>
-          <img src={this.props.largeImageURL} alt="Image" />
+          <img src={this.props.largeImageURL} alt="Search result" />
         </div>
       </div>
     );
