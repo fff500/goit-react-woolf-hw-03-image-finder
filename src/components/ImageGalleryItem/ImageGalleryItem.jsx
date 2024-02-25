@@ -21,7 +21,7 @@ export class ImageGalleryItem extends Component {
     return (
       <>
         <li className={style.ImageGalleryItem} onClick={this.toggleModal}>
-          <img src={webformatURL} alt="Image" />
+          <img src={webformatURL} alt="Image from search results" />
         </li>
         {this.state.showModal && (
           <Modal largeImageURL={largeImageURL} toggleModal={this.toggleModal} />
