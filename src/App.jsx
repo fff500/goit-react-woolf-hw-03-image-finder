@@ -11,9 +11,8 @@ import style from './App.module.css';
 export class App extends Component {
   state = {
     images: [],
-    page: 1,
+    page: 0,
     isLoading: false,
-    searchIsDone: false,
     searchQuery: '',
     totalImages: 0,
   };
@@ -34,7 +33,6 @@ export class App extends Component {
         images: newImages,
         page: 1,
         isLoading: false,
-        searchIsDone: true,
         searchQuery: query,
         totalImages: totalHits,
       });
@@ -65,10 +63,9 @@ export class App extends Component {
   };
 
   render() {
-    const { isLoading, searchIsDone, images, totalImages } = this.state;
+    const { isLoading, page, images, totalImages } = this.state;
 
-    const showLoadMore =
-      !isLoading && searchIsDone && images.length < totalImages;
+    const showLoadMore = !isLoading && !!page && images.length < totalImages;
 
     return (
       <div className={style.App}>
