@@ -7,7 +7,13 @@ export class Modal extends Component {
     if (event.key !== 'Escape') return;
 
     this.props.toggleModal();
-  };
+  }
+
+  handleClick = event => {
+    if (event.target === event.currentTarget) {
+      this.props.toggleModal();
+    }
+  }
 
   componentDidMount() {
     document.addEventListener('keydown', this.handleEscClick);
@@ -19,7 +25,7 @@ export class Modal extends Component {
 
   render() {
     return (
-      <div className={style.Overlay} onClick={this.props.toggleModal}>
+      <div className={style.Overlay} onClick={this.handleClick}>
         <div className={style.Modal}>
           <img src={this.props.largeImageURL} alt="Search result" />
         </div>

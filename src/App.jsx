@@ -18,49 +18,47 @@ export class App extends Component {
   };
 
   hendleSearch = async query => {
-    this.setState({ isLoading: true });
-
-    try {
-      const {
-        data: { hits, totalHits },
-      } = await getImages(query, 1);
-
-      const newImages = hits.map(({ id, webformatURL, largeImageURL }) => {
-        return { id, webformatURL, largeImageURL };
-      });
-
-      this.setState({
-        images: newImages,
-        page: 1,
-        isLoading: false,
-        searchQuery: query,
-        totalImages: totalHits,
-      });
-    } catch (error) {
-      alert(error.response?.data || 'Something went wrong!');
-    } finally {
-      this.setState({ isLoading: false });
-    }
+    this.setState({
+      images: [],
+      page: 1,
+      isLoading: false,
+      searchQuery: query,
+      totalImages: 0,
+    });
   };
 
   handleLoadMore = async () => {
-    this.setState({ isLoading: true });
-
-    try {
-      const {
-        data: { hits },
-      } = await getImages(this.state.searchQuery, this.state.page + 1);
-
-      this.setState(state => ({
-        images: [...state.images, ...hits],
-        page: state.page + 1,
-      }));
-    } catch (error) {
-      alert(error.response?.data || 'Something went wrong!');
-    } finally {
-      this.setState({ isLoading: false });
-    }
+    this.setState(state => ({
+      page: state.page + 1,
+    }));
   };
+
+  async componentDidUpdate(_, state) {
+    if (this.state.page !== state.page || this.state.searchQuery !== state.searchQuery) {
+
+      this.setState({ isLoading: true });
+
+      try {
+        const {
+          data: { hits, totalHits },
+        } = await getImages(this.state.searchQuery, this.state.page);
+
+        const newImages = hits.map(({ id, webformatURL, largeImageURL }) => {
+          return { id, webformatURL, largeImageURL };
+        });
+
+        this.setState(state => ({
+          images: [...state.images, ...newImages],
+          totalImages: totalHits,
+        }));
+
+      } catch (error) {
+        alert(error.response?.data || 'Something went wrong!');
+      } finally {
+        this.setState({ isLoading: false });
+      }
+    }
+  }
 
   render() {
     const { isLoading, page, images, totalImages } = this.state;

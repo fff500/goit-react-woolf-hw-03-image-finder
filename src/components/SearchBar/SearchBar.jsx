@@ -5,6 +5,8 @@ export const SearchBar = ({ onSubmit }) => {
     event.preventDefault();
 
     onSubmit(event.target.elements[1].value);
+
+    event.target.elements[1].value = '';
   };
 
   return (
@@ -20,6 +22,7 @@ export const SearchBar = ({ onSubmit }) => {
           autoComplete="off"
           autoFocus
           placeholder="Search images and photos"
+          required
         />
       </form>
     </header>
